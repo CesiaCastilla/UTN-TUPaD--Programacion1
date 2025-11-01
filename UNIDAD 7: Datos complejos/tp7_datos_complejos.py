@@ -65,19 +65,15 @@ for i in range(numero_de_contactos):
     # --- Validación para el Número (solo números enteros) ---
     while True:
         numero_str = input("Ingrese el número telefónico (solo números): ").strip()
-        try:
-            # Intentamos convertir la entrada a un entero.
-            # No guardamos el int, lo guardamos como string para preservar ceros a la izquierda
-            # si los hubiera, pero nos aseguramos de que sea solo numérico.
-            int(numero_str) 
-            if numero_str:
-                numero = numero_str
-                break # Si la conversión es exitosa y no está vacío, rompemos el bucle
-            else:
+        # Validar que la cadena no esté vacía y contenga solo dígitos
+        if numero_str and numero_str.isdigit():
+            numero = numero_str
+            break  # Si es válido, rompemos el bucle
+        else:
+            if not numero_str:
                 print("Error: El número telefónico no puede estar vacío. Intente de nuevo.")
-        except ValueError:
-            # Si la conversión falla, significa que había caracteres no numéricos.
-            print("Error: El número debe contener solo dígitos enteros. Intente de nuevo.")
+            else:
+                print("Error: El número debe contener solo dígitos enteros. Intente de nuevo.")
 
     # Almacenar en el diccionario
     contactos[nombre] = numero
@@ -142,18 +138,27 @@ numero_de_alumnos = 3
 # Ingresar nombres de alumnos y sus tuplas de notas
 for i in range(numero_de_alumnos):
     nombre = input(f"Ingrese el nombre del alumno #{i + 1}: ")
-    
+
     # Solicitar las 3 notas
     print(f"Ingrese las 3 notas para {nombre}:")
-    # Utilizamos list comprehension para facilitar el ingreso de las 3 notas
-    notas_str = [input(f"Nota {j + 1}: ") for j in range(3)]
-    
-    # Convertir las notas a números (float) y guardarlas como una tupla
-    try:
-        notas_float = tuple(float(n) for n in notas_str)
-        alumnos_notas[nombre] = notas_float
-    except ValueError:
-        print("¡Advertencia! Asegúrese de ingresar números válidos para las notas. Saltando este alumno.")
+
+    # Validar y convertir las 3 notas sin excepciones
+    notas_validas = True
+    notas_float = []
+
+    for j in range(3):
+        while True:
+            nota_str = input(f"Nota {j + 1}: ").strip()
+            # Validar que sea un número (puede ser decimal)
+            if nota_str.replace(".", "", 1).lstrip("-").isdigit() and nota_str:
+                notas_float.append(float(nota_str))
+                break
+            else:
+                print("Error: Ingrese un número válido para la nota.")
+
+    # Guardar como tupla si todas las notas son válidas
+    if notas_float:
+        alumnos_notas[nombre] = tuple(notas_float)
 
 # Mostrar el promedio de cada alumno
 print("\n--- Promedios de Alumnos ---")
@@ -235,15 +240,19 @@ while True:
         # Agregar Unidades al Stock
         producto = input("Ingrese el nombre del producto para agregar unidades: ").strip().title()
         if producto in stock_productos:
-            try:
-                cantidad = int(input(f"Ingrese cuántas unidades agregar a {producto}: "))
-                if cantidad > 0:
-                    stock_productos[producto] += cantidad
-                    print(f"Stock de {producto} actualizado. Nuevo stock: {stock_productos[producto]}")
+            while True:
+                cantidad_str = input(f"Ingrese cuántas unidades agregar a {producto}: ").strip()
+                # Validar que sea un número entero positivo
+                if cantidad_str.lstrip("-").isdigit():
+                    cantidad = int(cantidad_str)
+                    if cantidad > 0:
+                        stock_productos[producto] += cantidad
+                        print(f"Stock de {producto} actualizado. Nuevo stock: {stock_productos[producto]}")
+                        break
+                    else:
+                        print("La cantidad debe ser un número positivo.")
                 else:
-                    print("La cantidad debe ser un número positivo.")
-            except ValueError:
-                print("Entrada no válida. Por favor, ingrese un número entero.")
+                    print("Entrada no válida. Por favor, ingrese un número entero.")
         else:
             print(f"El producto '{producto}' no existe. Use la opción 3 para agregarlo.")
 
@@ -251,15 +260,19 @@ while True:
         # Agregar Nuevo Producto
         nuevo_producto = input("Ingrese el nombre del nuevo producto: ").strip().title()
         if nuevo_producto not in stock_productos:
-            try:
-                nuevo_stock = int(input(f"Ingrese el stock inicial para {nuevo_producto}: "))
-                if nuevo_stock >= 0:
-                    stock_productos[nuevo_producto] = nuevo_stock
-                    print(f"Producto '{nuevo_producto}' agregado con stock inicial de {nuevo_stock}.")
+            while True:
+                nuevo_stock_str = input(f"Ingrese el stock inicial para {nuevo_producto}: ").strip()
+                # Validar que sea un número entero no negativo
+                if nuevo_stock_str.lstrip("-").isdigit():
+                    nuevo_stock = int(nuevo_stock_str)
+                    if nuevo_stock >= 0:
+                        stock_productos[nuevo_producto] = nuevo_stock
+                        print(f"Producto '{nuevo_producto}' agregado con stock inicial de {nuevo_stock}.")
+                        break
+                    else:
+                        print("El stock inicial no puede ser negativo.")
                 else:
-                    print("El stock inicial no puede ser negativo.")
-            except ValueError:
-                print("Entrada no válida. Por favor, ingrese un número entero.")
+                    print("Entrada no válida. Por favor, ingrese un número entero.")
         else:
             print(f"El producto '{nuevo_producto}' ya existe. Use la opción 2 para actualizar su stock.")
 
@@ -289,24 +302,26 @@ print("Eventos programados:", agenda)
 # Permitir al usuario consultar un día y hora
 print("\n--- Consulta de Actividad ---")
 dia_consulta = input("Ingrese el día (ej: Lunes, Martes): ").strip().title()
-hora_consulta_str = input("Ingrese la hora (formato 24h, ej: 10, 15): ").strip()
 
-try:
-    # Convertir la hora a entero
-    hora_consulta = int(hora_consulta_str)
-    
-    # Construir la clave de la tupla para la búsqueda
-    clave_consulta = (dia_consulta, hora_consulta)
-    
-    # Consultar la actividad usando la clave de tupla
-    if clave_consulta in agenda:
-        evento = agenda[clave_consulta]
-        print(f"\nActividad para el {dia_consulta} a las {hora_consulta}:00: **{evento}**")
+while True:
+    hora_consulta_str = input("Ingrese la hora (formato 24h, ej: 10, 15): ").strip()
+
+    # Validar que sea un número entero
+    if hora_consulta_str.lstrip("-").isdigit():
+        hora_consulta = int(hora_consulta_str)
+
+        # Construir la clave de la tupla para la búsqueda
+        clave_consulta = (dia_consulta, hora_consulta)
+
+        # Consultar la actividad usando la clave de tupla
+        if clave_consulta in agenda:
+            evento = agenda[clave_consulta]
+            print(f"\nActividad para el {dia_consulta} a las {hora_consulta}:00: **{evento}**")
+        else:
+            print(f"\nNo hay actividad programada para el {dia_consulta} a las {hora_consulta}:00.")
+        break
     else:
-        print(f"\nNo hay actividad programada para el {dia_consulta} a las {hora_consulta}:00.")
-        
-except ValueError:
-    print("Error: La hora ingresada no es un número válido.")
+        print("Error: La hora ingresada no es un número válido. Intente de nuevo.")
 
 # 10) Dado un diccionario que mapea nombres de países con sus capitales, construí un nuevo diccionario donde:
 # • Las capitales sean las claves.
