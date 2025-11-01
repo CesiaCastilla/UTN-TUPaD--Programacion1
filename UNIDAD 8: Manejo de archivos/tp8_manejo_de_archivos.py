@@ -16,25 +16,36 @@ def leer_productos(nombre_archivo):
     Returns:
         Lista de diccionarios con los productos
     """
+    import os
+
     productos = []
 
-    try:
-        with open(nombre_archivo, 'r') as archivo:
-            for linea in archivo:
-                linea = linea.strip()
-                if linea:  # Ignorar lineas vacias
-                    datos = linea.split(',')
-                    if len(datos) == 3:
-                        producto = {
-                            'nombre': datos[0],
-                            'precio': float(datos[1]),
-                            'cantidad': int(datos[2])
-                        }
-                        productos.append(producto)
-    except FileNotFoundError:
+    # Validar que el archivo existe antes de intentar abrirlo
+    if not os.path.exists(nombre_archivo):
         print(f"Error: El archivo '{nombre_archivo}' no existe.")
-    except Exception as e:
-        print(f"Error al leer el archivo: {e}")
+        return productos
+
+    # Abrir y leer el archivo sin manejo de excepciones
+    with open(nombre_archivo, 'r') as archivo:
+        for linea in archivo:
+            linea = linea.strip()
+            if linea:  # Ignorar lineas vacias
+                datos = linea.split(',')
+                if len(datos) == 3:
+                    # Validar que precio y cantidad sean números
+                    precio_str = datos[1].strip()
+                    cantidad_str = datos[2].strip()
+
+                    # Validar precio (número decimal o entero)
+                    if precio_str.replace(".", "", 1).lstrip("-").isdigit():
+                        # Validar cantidad (número entero)
+                        if cantidad_str.lstrip("-").isdigit():
+                            producto = {
+                                'nombre': datos[0],
+                                'precio': float(precio_str),
+                                'cantidad': int(cantidad_str)
+                            }
+                            productos.append(producto)
 
     return productos
 
@@ -70,23 +81,27 @@ def agregar_producto(productos):
     nombre = input("Ingrese el nombre del producto: ").strip()
 
     while True:
-        try:
-            precio = float(input("Ingrese el precio del producto: "))
-            if precio < 0:
+        precio_input = input("Ingrese el precio del producto: ").strip()
+        # Validar que sea un número decimal o entero
+        if precio_input.replace(".", "", 1).lstrip("-").isdigit() and precio_input:
+            precio = float(precio_input)
+            if precio >= 0:
+                break
+            else:
                 print("Error: El precio no puede ser negativo.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero valido para el precio.")
 
     while True:
-        try:
-            cantidad = int(input("Ingrese la cantidad del producto: "))
-            if cantidad < 0:
+        cantidad_input = input("Ingrese la cantidad del producto: ").strip()
+        # Validar que sea un número entero
+        if cantidad_input.lstrip("-").isdigit() and cantidad_input:
+            cantidad = int(cantidad_input)
+            if cantidad >= 0:
+                break
+            else:
                 print("Error: La cantidad no puede ser negativa.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero entero valido para la cantidad.")
 
     # Buscar si el producto ya existe
@@ -139,14 +154,12 @@ def guardar_productos(nombre_archivo, productos):
         nombre_archivo: Ruta del archivo de productos
         productos: Lista de diccionarios con los productos
     """
-    try:
-        with open(nombre_archivo, 'w') as archivo:
-            for producto in productos:
-                linea = f"{producto['nombre']},{producto['precio']},{producto['cantidad']}\n"
-                archivo.write(linea)
-        print(f"\nProductos guardados exitosamente en '{nombre_archivo}'.")
-    except Exception as e:
-        print(f"Error al guardar el archivo: {e}")
+    # Guardar productos sin manejo de excepciones
+    with open(nombre_archivo, 'w') as archivo:
+        for producto in productos:
+            linea = f"{producto['nombre']},{producto['precio']},{producto['cantidad']}\n"
+            archivo.write(linea)
+    print(f"\nProductos guardados exitosamente en '{nombre_archivo}'.")
 
 
 def menu_principal():
