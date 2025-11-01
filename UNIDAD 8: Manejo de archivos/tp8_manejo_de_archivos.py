@@ -4,7 +4,6 @@ Este programa gestiona un sistema de productos utilizando archivos de texto.
 Permite leer, mostrar, agregar, buscar y actualizar productos.
 """
 
-
 # ACTIVIDAD 2: Leer y mostrar productos
 # ACTIVIDAD 4: Cargar productos en una lista de diccionarios
 def leer_productos(nombre_archivo):
