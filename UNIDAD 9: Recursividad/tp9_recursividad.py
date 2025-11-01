@@ -20,7 +20,6 @@ def factorial(n):
     # Caso recursivo
     return n * factorial(n - 1)
 
-
 def mostrar_factoriales():
     """
     Solicita un numero al usuario y muestra el factorial de todos los
@@ -29,19 +28,20 @@ def mostrar_factoriales():
     print("\n=== EJERCICIO 1: FACTORIAL ===")
 
     while True:
-        try:
-            numero = int(input("Ingrese un numero entero positivo: "))
-            if numero < 1:
+        numero_input = input("Ingrese un numero entero positivo: ").strip()
+        # Validar que sea un número entero
+        if numero_input.lstrip("-").isdigit():
+            numero = int(numero_input)
+            if numero >= 1:
+                break
+            else:
                 print("Error: El numero debe ser mayor o igual a 1.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero entero valido.")
 
     print(f"\nFactoriales de 1 a {numero}:")
     for i in range(1, numero + 1):
         print(f"Factorial de {i} = {factorial(i)}")
-
 
 # EJERCICIO 2: Serie de Fibonacci recursiva
 def fibonacci(n):
@@ -62,7 +62,6 @@ def fibonacci(n):
     # Caso recursivo
     return fibonacci(n - 1) + fibonacci(n - 2)
 
-
 def mostrar_fibonacci():
     """
     Solicita una posicion al usuario y muestra la serie de Fibonacci
@@ -71,19 +70,20 @@ def mostrar_fibonacci():
     print("\n=== EJERCICIO 2: FIBONACCI ===")
 
     while True:
-        try:
-            posicion = int(input("Ingrese la posicion hasta donde mostrar la serie: "))
-            if posicion < 0:
+        posicion_input = input("Ingrese la posicion hasta donde mostrar la serie: ").strip()
+        # Validar que sea un número entero
+        if posicion_input.lstrip("-").isdigit():
+            posicion = int(posicion_input)
+            if posicion >= 0:
+                break
+            else:
                 print("Error: La posicion debe ser mayor o igual a 0.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero entero valido.")
 
     print(f"\nSerie de Fibonacci hasta la posicion {posicion}:")
     for i in range(posicion + 1):
         print(f"Fibonacci({i}) = {fibonacci(i)}")
-
 
 # EJERCICIO 3: Potencia recursiva
 def potencia(base, exponente):
@@ -104,7 +104,6 @@ def potencia(base, exponente):
     # Caso recursivo
     return base * potencia(base, exponente - 1)
 
-
 def probar_potencia():
     """
     Prueba la funcion de potencia recursiva con valores ingresados por el usuario.
@@ -112,19 +111,28 @@ def probar_potencia():
     print("\n=== EJERCICIO 3: POTENCIA ===")
 
     while True:
-        try:
-            base = float(input("Ingrese la base: "))
-            exponente = int(input("Ingrese el exponente (entero no negativo): "))
-            if exponente < 0:
-                print("Error: El exponente debe ser no negativo.")
-                continue
+        base_input = input("Ingrese la base: ").strip()
+        # Validar que sea un número (decimal o entero)
+        if base_input.replace(".", "", 1).lstrip("-").isdigit() and base_input:
+            base = float(base_input)
             break
-        except ValueError:
-            print("Error: Ingrese valores validos.")
+        else:
+            print("Error: Ingrese un valor numerico valido para la base.")
+
+    while True:
+        exponente_input = input("Ingrese el exponente (entero no negativo): ").strip()
+        # Validar que sea un número entero
+        if exponente_input.lstrip("-").isdigit() and exponente_input:
+            exponente = int(exponente_input)
+            if exponente >= 0:
+                break
+            else:
+                print("Error: El exponente debe ser no negativo.")
+        else:
+            print("Error: Ingrese un numero entero valido para el exponente.")
 
     resultado = potencia(base, exponente)
     print(f"\n{base}^{exponente} = {resultado}")
-
 
 # EJERCICIO 4: Decimal a binario recursivo
 def decimal_a_binario(n):
@@ -145,7 +153,6 @@ def decimal_a_binario(n):
     # Caso recursivo
     return decimal_a_binario(n // 2) + str(n % 2)
 
-
 def probar_decimal_a_binario():
     """
     Solicita un numero decimal y muestra su representacion en binario.
@@ -153,18 +160,19 @@ def probar_decimal_a_binario():
     print("\n=== EJERCICIO 4: DECIMAL A BINARIO ===")
 
     while True:
-        try:
-            numero = int(input("Ingrese un numero entero positivo: "))
-            if numero < 0:
+        numero_input = input("Ingrese un numero entero positivo: ").strip()
+        # Validar que sea un número entero
+        if numero_input.lstrip("-").isdigit() and numero_input:
+            numero = int(numero_input)
+            if numero >= 0:
+                break
+            else:
                 print("Error: El numero debe ser positivo.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero entero valido.")
 
     binario = decimal_a_binario(numero)
     print(f"\nEl numero {numero} en binario es: {binario}")
-
 
 # EJERCICIO 5: Verificar palindromo recursivo
 def es_palindromo(palabra):
@@ -189,7 +197,6 @@ def es_palindromo(palabra):
     # Llamada recursiva con la palabra sin el primer y ultimo caracter
     return es_palindromo(palabra[1:-1])
 
-
 def probar_palindromo():
     """
     Solicita una palabra y verifica si es palindromo.
@@ -202,7 +209,6 @@ def probar_palindromo():
         print(f"\n'{palabra}' ES un palindromo.")
     else:
         print(f"\n'{palabra}' NO es un palindromo.")
-
 
 # EJERCICIO 6: Suma de digitos recursiva
 def suma_digitos(n):
@@ -222,7 +228,6 @@ def suma_digitos(n):
     # Caso recursivo
     return (n % 10) + suma_digitos(n // 10)
 
-
 def probar_suma_digitos():
     """
     Solicita un numero y muestra la suma de sus digitos.
@@ -230,18 +235,19 @@ def probar_suma_digitos():
     print("\n=== EJERCICIO 6: SUMA DE DIGITOS ===")
 
     while True:
-        try:
-            numero = int(input("Ingrese un numero entero positivo: "))
-            if numero < 0:
+        numero_input = input("Ingrese un numero entero positivo: ").strip()
+        # Validar que sea un número entero
+        if numero_input.lstrip("-").isdigit() and numero_input:
+            numero = int(numero_input)
+            if numero >= 0:
+                break
+            else:
                 print("Error: El numero debe ser positivo.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero entero valido.")
 
     suma = suma_digitos(numero)
     print(f"\nLa suma de los digitos de {numero} es: {suma}")
-
 
 # EJERCICIO 7: Contar bloques de piramide recursivo
 def contar_bloques(n):
@@ -261,7 +267,6 @@ def contar_bloques(n):
     # Caso recursivo
     return n + contar_bloques(n - 1)
 
-
 def probar_contar_bloques():
     """
     Solicita el numero de bloques del nivel mas bajo y calcula el total.
@@ -269,18 +274,19 @@ def probar_contar_bloques():
     print("\n=== EJERCICIO 7: CONTAR BLOQUES DE PIRAMIDE ===")
 
     while True:
-        try:
-            n = int(input("Ingrese el numero de bloques en el nivel mas bajo: "))
-            if n < 1:
+        n_input = input("Ingrese el numero de bloques en el nivel mas bajo: ").strip()
+        # Validar que sea un número entero
+        if n_input.lstrip("-").isdigit() and n_input:
+            n = int(n_input)
+            if n >= 1:
+                break
+            else:
                 print("Error: El numero debe ser mayor o igual a 1.")
-                continue
-            break
-        except ValueError:
+        else:
             print("Error: Ingrese un numero entero valido.")
 
     total = contar_bloques(n)
     print(f"\nTotal de bloques necesarios: {total}")
-
 
 # EJERCICIO 8: Contar apariciones de un digito recursivo
 def contar_digito(numero, digito):
@@ -307,7 +313,6 @@ def contar_digito(numero, digito):
     # Caso recursivo: sumar con el resto del numero
     return cuenta + contar_digito(numero // 10, digito)
 
-
 def probar_contar_digito():
     """
     Solicita un numero y un digito, y cuenta cuantas veces aparece.
@@ -315,24 +320,31 @@ def probar_contar_digito():
     print("\n=== EJERCICIO 8: CONTAR DIGITO ===")
 
     while True:
-        try:
-            numero = int(input("Ingrese un numero entero positivo: "))
-            if numero < 0:
+        numero_input = input("Ingrese un numero entero positivo: ").strip()
+        # Validar que sea un número entero
+        if numero_input.lstrip("-").isdigit() and numero_input:
+            numero = int(numero_input)
+            if numero >= 0:
+                break
+            else:
                 print("Error: El numero debe ser positivo.")
-                continue
+        else:
+            print("Error: Ingrese un numero entero valido.")
 
-            digito = int(input("Ingrese un digito a buscar (0-9): "))
-            if digito < 0 or digito > 9:
+    while True:
+        digito_input = input("Ingrese un digito a buscar (0-9): ").strip()
+        # Validar que sea un número entero
+        if digito_input.lstrip("-").isdigit() and digito_input:
+            digito = int(digito_input)
+            if 0 <= digito <= 9:
+                break
+            else:
                 print("Error: El digito debe estar entre 0 y 9.")
-                continue
-
-            break
-        except ValueError:
-            print("Error: Ingrese valores validos.")
+        else:
+            print("Error: Ingrese un numero entero valido.")
 
     cantidad = contar_digito(numero, digito)
     print(f"\nEl digito {digito} aparece {cantidad} veces en {numero}")
-
 
 def menu_principal():
     """
@@ -377,13 +389,11 @@ def menu_principal():
         else:
             print("\nOpcion invalida. Por favor, seleccione una opcion del 1 al 9.")
 
-
 def main():
     """
     Funcion principal del programa.
     """
     menu_principal()
-
 
 if __name__ == "__main__":
     main()
